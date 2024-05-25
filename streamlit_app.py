@@ -18,24 +18,14 @@ except Exception as e:
 st.title(":cup_with_straw: Customize Your Smoothie :cup_with_straw:")
 st.write("**Choose the fruits you want in your custom smoothie,**")
 
-# Input for the name on the order
-name_on_order = st.text_input('Name on Smoothie:')
-st.write('The name on your smoothie will be:', name_on_order)
-
 # Fetch available fruits from Snowflake
 try:
+    my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'), col('SEARCH_ON'))
     
-    my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
-    #st.dataframe(data=fruityvice_response.json(), use_container_width=True)
-    #st.stop()
-
-    #Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC function
-    pd_df=my_dataframe.to_pandas()
-    #st.dataframe(pd_df)
-    #st.stop()
-
+    # Convert the Snowpark DataFrame to a Pandas DataFrame
+    pd_df = my_dataframe.to_pandas()
     
-    fruits = [row['FRUIT_NAME'] for row in my_dataframe]
+    fruits = [row['FRUIT_NAME'] for index, row in pd_df.iterrows()]
     st.write("Fetched available fruits successfully.")
 except Exception as e:
     st.error(f"Failed to fetch fruits from Snowflake: {e}")
@@ -51,10 +41,16 @@ if ingredients_list:
     # Fetch details about a fruit from an external API
     fruit_chosen = ingredients_list[0]  # Assuming you want details for the first chosen fruit
 
-    search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
-    st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
-        
+    # Locate the corresponding row in the Pandas DataFrame
+    search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+    
+    # Display search value
+    st.write('The search value for ', fruit_chosen, ' is ', search_on, '.')
+    
+    # Display subheader for fruit nutrition information
     st.subheader(f"{fruit_chosen} Nutrition Information")
+    
+    # Fetch nutrition information from external API
     fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{fruit_chosen}")
     fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
    
@@ -75,6 +71,5 @@ if ingredients_list:
         except Exception as e:
             st.error(f"Failed to submit the order: {e}")
 
-            st.error(f"Failed to submit the order: {e}")
 
 
