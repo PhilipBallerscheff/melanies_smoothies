@@ -38,7 +38,7 @@ name_on_order = st.text_input('Name on Smoothie:', '')
 
 if ingredients_list:
     # Join the ingredients into a single string
-    ingredients_string = ' '.join(ingredients_list)
+    ingredients_string = ''.join(ingredients_list)
     st.write(f"Ingredients: {ingredients_string}")
 
     # Fetch details about a fruit from an external API
