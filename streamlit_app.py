@@ -3,10 +3,6 @@ import streamlit as st
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
 
-import requests
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-st.text(fruityvice_response)
-
 # Read secrets
 connection_parameters = st.secrets["connections"]["snowflake"]
 
@@ -57,4 +53,8 @@ if ingredients_list:
             st.success(f"Your Smoothie is ordered, {name_on_order}!", icon="✅")
         except Exception as e:
             st.error(f"Failed to submit the order: {e}")
+
+import requests
+fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+st.text(fruityvice_response)
 
