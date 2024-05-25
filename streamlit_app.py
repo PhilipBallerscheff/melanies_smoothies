@@ -39,8 +39,9 @@ if ingredients_list:
     st.write(f"Ingredients: {ingredients_string}")
 
     # Fetch details about a fruit from an external API
-    st.subheader(fruit_chosen + ' Nutrition Information')
-    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+ fruit_chosen)
+    fruit_chosen = ingredients_list[0]  # Assuming you want details for the first chosen fruit
+    st.subheader(f"{fruit_chosen} Nutrition Information")
+    fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{fruit_chosen}")
     fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
 
     # Create the insert statement
@@ -58,6 +59,8 @@ if ingredients_list:
             session.sql(my_insert_stmt).collect()
             st.success(f"Your Smoothie is ordered, {name_on_order}!", icon="✅")
         except Exception as e:
+            st.error(f"Failed to submit the order: {e}")
+
             st.error(f"Failed to submit the order: {e}")
 
 
