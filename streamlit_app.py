@@ -2,6 +2,7 @@
 import streamlit as st
 from snowflake.snowpark import Session
 from snowflake.snowpark.functions import col
+import requests
 
 # Read secrets
 connection_parameters = st.secrets["connections"]["snowflake"]
@@ -36,6 +37,9 @@ if ingredients_list:
     # Join the ingredients into a single string
     ingredients_string = ' '.join(ingredients_list)
     st.write(f"Ingredients: {ingredients_string}")
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+
 
     # Create the insert statement
     my_insert_stmt = f"""
@@ -54,7 +58,4 @@ if ingredients_list:
         except Exception as e:
             st.error(f"Failed to submit the order: {e}")
 
-import requests
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-#st.text(fruityvice_response.json())
-fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+
