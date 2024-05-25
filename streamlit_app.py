@@ -33,6 +33,9 @@ except Exception as e:
 # Select ingredients
 ingredients_list = st.multiselect('Choose up to 5 ingredients:', fruits, max_selections=5)
 
+# Input for the name on the order
+name_on_order = st.text_input('Name on Smoothie:', '')
+
 if ingredients_list:
     # Join the ingredients into a single string
     ingredients_string = ' '.join(ingredients_list)
