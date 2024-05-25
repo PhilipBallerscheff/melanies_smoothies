@@ -37,9 +37,10 @@ if ingredients_list:
     # Join the ingredients into a single string
     ingredients_string = ' '.join(ingredients_list)
     st.write(f"Ingredients: {ingredients_string}")
-    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
 
+    # Fetch details about a fruit from an external API
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+    fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
 
     # Create the insert statement
     my_insert_stmt = f"""
