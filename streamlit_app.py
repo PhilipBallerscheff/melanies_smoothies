@@ -39,7 +39,7 @@ if ingredients_list:
     st.write(f"Ingredients: {ingredients_string}")
 
     # Fetch details about a fruit from an external API
-    st-subheader(fruit_chosen + ' Nutrition Information')
+    st.subheader(fruit_chosen + ' Nutrition Information')
     fruityvice_response = requests.get("https://fruityvice.com/api/fruit/"+ fruit_chosen)
     fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
 
