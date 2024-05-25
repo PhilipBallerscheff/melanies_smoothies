@@ -24,7 +24,17 @@ st.write('The name on your smoothie will be:', name_on_order)
 
 # Fetch available fruits from Snowflake
 try:
-    my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME')).collect()
+    
+    my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'),col('SEARCH_ON'))
+    #st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+    #st.stop()
+
+    #Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC function
+    pd_df=my_dataframe.to_pandas()
+    #st.dataframe(pd_df)
+    #st.stop()
+
+    
     fruits = [row['FRUIT_NAME'] for row in my_dataframe]
     st.write("Fetched available fruits successfully.")
 except Exception as e:
@@ -40,10 +50,14 @@ if ingredients_list:
 
     # Fetch details about a fruit from an external API
     fruit_chosen = ingredients_list[0]  # Assuming you want details for the first chosen fruit
+
+    search_on=pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+    st.write('The search value for ', fruit_chosen,' is ', search_on, '.')
+        
     st.subheader(f"{fruit_chosen} Nutrition Information")
     fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{fruit_chosen}")
     fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
-
+   
     # Create the insert statement
     my_insert_stmt = f"""
         INSERT INTO smoothies.public.orders(ingredients, name_on_order)
